@@ -1,0 +1,41 @@
+{
+  "name": "local-tls-gateway",
+  "root_ca_path": "fixtures/certificates/ca/root.pem",
+  "certificates": [
+    {
+      "id": "shop",
+      "domain": "shop.example.test",
+      "cert_path": "fixtures/certificates/edge/shop.example.test/fullchain.pem",
+      "key_path": "fixtures/certificates/edge/shop.example.test/key.pem",
+      "enabled": true
+    },
+    {
+      "id": "api",
+      "domain": "api.example.test",
+      "cert_path": "fixtures/certificates/public/api.example.test/fullchain.pem",
+      "key_path": "fixtures/certificates/public/api.example.test/key.pem",
+      "enabled": true
+    },
+    {
+      "id": "admin",
+      "domain": "admin.example.test",
+      "cert_path": "fixtures/certificates/internal/admin.example.test/cert.pem",
+      "key_path": "fixtures/certificates/internal/admin.example.test/key.pem",
+      "enabled": true
+    },
+    {
+      "id": "legacy",
+      "domain": "legacy.example.test",
+      "cert_path": "fixtures/certificates/legacy/legacy.example.test/fullchain.pem",
+      "key_path": "fixtures/certificates/legacy/legacy.example.test/key.pem",
+      "enabled": false
+    },
+    {
+      "id": "orders",
+      "domain": "orders.example.test",
+      "cert_path": "fixtures/certificates/payments/orders.example.test/fullchain.pem",
+      "key_path": "fixtures/certificates/payments/orders.example.test/key.pem",
+      "enabled": true
+    }
+  ]
+}

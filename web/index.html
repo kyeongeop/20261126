@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>证书库存 · Local TLS Gateway</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="brand" href="/certificates" aria-label="Local TLS Gateway">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 3.5 19 6v5.2c0 4.1-2.8 7.9-7 9.3-4.2-1.4-7-5.2-7-9.3V6l7-2.5Z" stroke="currentColor" stroke-width="1.7"/>
+            <path d="m9.2 11.8 1.9 1.9 3.9-4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="brand__copy">
+          <strong>Local TLS Gateway</strong>
+          <span>证书控制台</span>
+        </span>
+      </a>
+      <nav class="topnav" aria-label="主导航">
+        <a class="topnav__link is-active" href="/certificates">证书库存</a>
+        <span class="topnav__divider" aria-hidden="true"></span>
+        <span class="env-pill"><span class="env-pill__dot"></span>本地环境</span>
+      </nav>
+      <div class="topbar__actions">
+        <span class="gateway-meta" id="gateway-meta">读取网关快照…</span>
+        <button class="button button--ghost" id="reload-button" type="button">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M16 6.5A6.5 6.5 0 1 0 16.2 13M16 3.5v3.7h-3.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          重载网关
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="page-heading">
+      <div>
+        <p class="eyebrow">TLS / CERTIFICATE INVENTORY</p>
+        <h1>证书库存</h1>
+        <p class="page-heading__lead">集中盘点分散在各目录的网关证书，按到期日安排续期，并识别尚未重载的证书替换。</p>
+      </div>
+      <div class="scan-chip" title="每次打开页面都会重新读取证书文件">
+        <span class="scan-chip__pulse"></span>
+        <span>本地扫描</span>
+        <time id="scan-time">—</time>
+      </div>
+    </section>
+
+    <section class="attention" id="attention" aria-live="polite" hidden>
+      <div class="attention__icon" aria-hidden="true">!</div>
+      <div class="attention__copy">
+        <strong id="attention-title">需要关注</strong>
+        <p id="attention-detail"></p>
+      </div>
+      <button class="attention__action" id="attention-action" type="button">查看待处理</button>
+    </section>
+
+    <section class="stats" aria-label="证书概览">
+      <article class="stat-card">
+        <div class="stat-card__top">
+          <span>全部证书</span>
+          <span class="stat-card__icon stat-card__icon--slate" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M5 3.5h7l3 3v10H5v-13Z" stroke="currentColor" stroke-width="1.5"/><path d="M12 3.5v3h3M7.7 10h4.6M7.7 12.7h3.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </span>
+        </div>
+        <strong class="stat-card__value" id="stat-total">—</strong>
+        <span class="stat-card__hint" id="stat-total-hint">来自本地配置</span>
+      </article>
+      <article class="stat-card">
+        <div class="stat-card__top">
+          <span>使用中</span>
+          <span class="stat-card__icon stat-card__icon--green" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none"><path d="m5.5 10.2 3 3 6-6.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <strong class="stat-card__value" id="stat-active">—</strong>
+        <span class="stat-card__hint">已加载且文件一致</span>
+      </article>
+      <article class="stat-card stat-card--amber">
+        <div class="stat-card__top">
+          <span>30 天内到期</span>
+          <span class="stat-card__icon stat-card__icon--amber" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 6.4v4l2.6 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </span>
+        </div>
+        <strong class="stat-card__value" id="stat-expiring">—</strong>
+        <span class="stat-card__hint" id="stat-expiring-hint">按证书 NotAfter 计算</span>
+      </article>
+      <article class="stat-card stat-card--red">
+        <div class="stat-card__top">
+          <span>已过期</span>
+          <span class="stat-card__icon stat-card__icon--red" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M10 6.3v4.4M10 13.6v.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M8.5 3.7 2.9 14a1.6 1.6 0 0 0 1.4 2.3h11.4a1.6 1.6 0 0 0 1.4-2.3L11.5 3.7a1.7 1.7 0 0 0-3 0Z" stroke="currentColor" stroke-width="1.5"/></svg>
+          </span>
+        </div>
+        <strong class="stat-card__value" id="stat-expired">—</strong>
+        <span class="stat-card__hint">需立即更换</span>
+      </article>
+      <article class="stat-card stat-card--violet">
+        <div class="stat-card__top">
+          <span>未重载</span>
+          <span class="stat-card__icon stat-card__icon--violet" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M3.6 7.4A7 7 0 0 1 16 5.5M16.4 12.6A7 7 0 0 1 4 14.5M16 3v3h-3M4 17v-3h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </div>
+        <strong class="stat-card__value" id="stat-stale">—</strong>
+        <span class="stat-card__hint">磁盘文件与内存不一致</span>
+      </article>
+    </section>
+
+    <section class="inventory-panel">
+      <div class="toolbar">
+        <div class="toolbar__title">
+          <h2>证书清单</h2>
+          <span id="result-count">正在读取…</span>
+        </div>
+        <div class="toolbar__filters">
+          <label class="search-field">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.8" cy="8.8" r="5.2" stroke="currentColor" stroke-width="1.5"/><path d="m12.8 12.8 3.2 3.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <span class="sr-only">搜索域名</span>
+            <input id="search-input" type="search" placeholder="搜索域名、签发者或路径" autocomplete="off">
+          </label>
+          <label class="select-field">
+            <span>到期</span>
+            <select id="expiry-select">
+              <option value="all">全部到期日</option>
+              <option value="7d">7 天内</option>
+              <option value="30d">30 天内</option>
+              <option value="90d">90 天内</option>
+              <option value="expired">已过期</option>
+              <option value="custom">指定日期范围</option>
+            </select>
+          </label>
+          <label class="select-field">
+            <span>状态</span>
+            <select id="usage-select">
+              <option value="all">全部状态</option>
+              <option value="active">使用中</option>
+              <option value="stale">未重载</option>
+              <option value="standby">未启用</option>
+              <option value="unloaded">未加载</option>
+            </select>
+          </label>
+          <button class="button button--quiet" id="reset-button" type="button">重置</button>
+        </div>
+      </div>
+
+      <div class="date-filter" id="date-filter" hidden>
+        <span class="date-filter__label">到期日区间</span>
+        <label>
+          <span>从</span>
+          <input id="date-from" type="date" aria-label="到期日开始日期">
+        </label>
+        <span class="date-filter__dash">—</span>
+        <label>
+          <span>至</span>
+          <input id="date-to" type="date" aria-label="到期日结束日期">
+        </label>
+        <button class="button button--small" id="apply-dates" type="button">应用</button>
+        <span class="date-filter__hint" id="date-hint">按证书到期日筛选，包含起止当天</span>
+      </div>
+
+      <div class="table-wrap">
+        <table class="cert-table">
+          <thead>
+            <tr>
+              <th scope="col">域名</th>
+              <th scope="col">签发者</th>
+              <th scope="col">到期时间</th>
+              <th scope="col">链完整性</th>
+              <th scope="col">当前使用状态</th>
+              <th scope="col"><span class="sr-only">操作</span></th>
+            </tr>
+          </thead>
+          <tbody id="cert-table-body">
+            <tr class="loading-row">
+              <td colspan="6">
+                <span class="loading-dot"></span>
+                正在扫描证书库存…
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" id="empty-state" hidden>
+        <div class="empty-state__art" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none"><path d="M17 11h21l11 11v31H17V11Z" stroke="currentColor" stroke-width="2"/><path d="M38 11v11h11M25 31h16M25 38h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="44" cy="45" r="7" fill="var(--surface)" stroke="currentColor" stroke-width="2"/><path d="m41.5 45 1.7 1.7 3.2-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <strong>没有符合条件的证书</strong>
+        <p>调整到期日或状态筛选后再试。</p>
+        <button class="button button--quiet" id="empty-reset" type="button">清除筛选</button>
+      </div>
+
+      <footer class="panel-footer">
+        <span><span class="legend-dot legend-dot--green"></span>库存数据直接读取 PEM 文件</span>
+        <span>使用状态来自网关最近一次重载的内存快照</span>
+      </footer>
+    </section>
+  </main>
+
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+  <aside class="drawer" id="detail-drawer" aria-labelledby="drawer-title" aria-hidden="true">
+    <div class="drawer__header">
+      <div>
+        <span class="eyebrow">CERTIFICATE DETAIL</span>
+        <h2 id="drawer-title">证书详情</h2>
+      </div>
+      <button class="icon-button" id="drawer-close" type="button" aria-label="关闭详情">
+        <svg viewBox="0 0 20 20" fill="none"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="drawer__body" id="drawer-body"></div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

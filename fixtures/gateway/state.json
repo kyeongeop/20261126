@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "gateway": "local-tls-gateway",
+  "reloaded_at": "2026-11-24T09:30:00Z",
+  "certificates": {
+    "admin": {
+      "id": "admin",
+      "cert_path": "fixtures/certificates/internal/admin.example.test/cert.pem",
+      "key_path": "fixtures/certificates/internal/admin.example.test/key.pem",
+      "fingerprint": "b458794932df5dd15805be4d45702d55290597308c5d02a5f50328935c33ddf0",
+      "bundle_sha256": "db42fb80d8345abec9d8bbf29ed956e37107423a6e0924e4e5ad37c79bcb6abc",
+      "subject": "CN=admin.example.test,O=Local TLS Gateway",
+      "issuer": "CN=Local Gateway Intermediate CA,O=Local TLS Gateway",
+      "dns_names": [
+        "admin.example.test"
+      ],
+      "not_before": "2026-06-01T00:00:00Z",
+      "not_after": "2026-12-12T00:00:00Z",
+      "chain_length": 1,
+      "loaded_at": "2026-11-24T09:30:00Z"
+    },
+    "api": {
+      "id": "api",
+      "cert_path": "fixtures/certificates/public/api.example.test/fullchain.pem",
+      "key_path": "fixtures/certificates/public/api.example.test/key.pem",
+      "fingerprint": "ab20bf1a8597197b79e7ff18f035c8798b8399c95045a8e37a0668027bccd8b5",
+      "bundle_sha256": "c04238f802afe9e9346c4aaddcbb1b6447e9b7bc329bc8ee4c3d3db905b90d6b",
+      "subject": "CN=api.example.test,O=Local TLS Gateway",
+      "issuer": "CN=Local Gateway Intermediate CA,O=Local TLS Gateway",
+      "dns_names": [
+        "api.example.test"
+      ],
+      "not_before": "2026-09-01T00:00:00Z",
+      "not_after": "2027-09-01T00:00:00Z",
+      "chain_length": 2,
+      "loaded_at": "2026-11-24T09:30:00Z"
+    },
+    "orders": {
+      "id": "orders",
+      "cert_path": "fixtures/certificates/payments/orders.example.test/fullchain.pem",
+      "key_path": "fixtures/certificates/payments/orders.example.test/key.pem",
+      "fingerprint": "e6b7b940f1468412a0aea07bcbdeb245107eb9ee6fd09fada11a33ef771f3ff3",
+      "bundle_sha256": "9c785b06c56f4a1f8b920b93772465904b820ff99e3bd500282e85bcf884899e",
+      "subject": "CN=orders.example.test,O=Local TLS Gateway",
+      "issuer": "CN=Local Gateway Intermediate CA,O=Local TLS Gateway",
+      "dns_names": [
+        "orders.example.test"
+      ],
+      "not_before": "2025-10-01T00:00:00Z",
+      "not_after": "2026-12-05T00:00:00Z",
+      "chain_length": 2,
+      "loaded_at": "2026-11-24T09:30:00Z"
+    },
+    "shop": {
+      "id": "shop",
+      "cert_path": "fixtures/certificates/edge/shop.example.test/fullchain.pem",
+      "key_path": "fixtures/certificates/edge/shop.example.test/key.pem",
+      "fingerprint": "397791e746e3a9ff3cc1ffb5ad838ffcc18b20befe9b90fbb12827fa8b3b7fdc",
+      "bundle_sha256": "9b5365b20565d101413e4725d9b1e261c347091a0e3e5b81193e3319a73cf5a2",
+      "subject": "CN=shop.example.test,O=Local TLS Gateway",
+      "issuer": "CN=Local Gateway Intermediate CA,O=Local TLS Gateway",
+      "dns_names": [
+        "shop.example.test"
+      ],
+      "not_before": "2026-08-01T00:00:00Z",
+      "not_after": "2027-01-18T00:00:00Z",
+      "chain_length": 2,
+      "loaded_at": "2026-11-24T09:30:00Z"
+    }
+  }
+}
