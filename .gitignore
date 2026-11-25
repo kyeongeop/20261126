@@ -1,0 +1,6 @@
+/data/
+/previewtoken
+/previewtoken.exe
+*.test
+*.out
+coverage.txt

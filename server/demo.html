@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一次性预览令牌 · 缩略图批量演示</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.6 system-ui, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+         margin: 0; background: #0f1420; color: #e8ecf6; }
+  main { max-width: 960px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  p.sub { color: #9aa7c2; margin: 0 0 20px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: end;
+         background: #182033; border: 1px solid #28324d; border-radius: 12px; padding: 14px; margin-bottom: 18px; }
+  label { display: grid; gap: 4px; font-size: 12px; color: #9aa7c2; }
+  input { background: #0f1420; border: 1px solid #2c3857; color: #e8ecf6; border-radius: 8px; padding: 7px 10px; min-width: 150px; }
+  button { background: #3b6ef6; color: #fff; border: 0; border-radius: 8px; padding: 9px 14px; font-weight: 600; cursor: pointer; }
+  button.secondary { background: #2a3552; }
+  button:disabled { opacity: .5; cursor: default; }
+  section { background: #182033; border: 1px solid #28324d; border-radius: 12px; padding: 16px; margin-bottom: 18px; }
+  section h2 { font-size: 15px; margin: 0 0 4px; }
+  section .hint { color: #9aa7c2; font-size: 12.5px; margin: 0 0 12px; }
+  .thumbs { display: flex; flex-wrap: wrap; gap: 12px; }
+  .thumb { display: grid; gap: 6px; justify-items: center; font-size: 12px; color: #b9c4de; }
+  .thumb img { width: 160px; height: 100px; border-radius: 8px; border: 1px solid #2c3857; background: #0f1420; }
+  .thumb .ok { color: #46d39a; } .thumb .bad { color: #ff7a7a; }
+  pre { background: #0b1020; border: 1px solid #232c47; border-radius: 8px; padding: 10px 12px;
+        overflow: auto; font-size: 12px; max-height: 220px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>一次性预览令牌</h1>
+  <p class="sub">令牌绑定文件名、版本、用户、用途与过期时间；使用一次或过期即失效。本页同时验证同页缩略图批量请求不会被误判为重放。</p>
+
+  <div class="bar">
+    <label>文件名 file <input id="file" value="brand/hero.png"></label>
+    <label>版本 version <input id="version" value="v42"></label>
+    <label>用户 user <input id="user" value="alice"></label>
+  </div>
+
+  <section>
+    <h2>1. 单个一次性预览令牌</h2>
+    <p class="hint">申请令牌后连续请求两次 <code>/preview</code>：第一次 200，第二次必须是 401 replayed。</p>
+    <button id="singleBtn">申请并使用令牌（连续两次）</button>
+    <pre id="singleLog">尚未执行。</pre>
+  </section>
+
+  <section>
+    <h2>2. 同页缩略图批量（批量签发，每图独立令牌）</h2>
+    <p class="hint">一次批量签发 4 枚不同的一次性令牌，页面并发加载 4 张图片，应全部成功；再重放这些 URL 应全部 401。</p>
+    <div class="row">
+      <button id="batchBtn">批量签发并并发加载</button>
+      <button id="replayBatchBtn" class="secondary" disabled>重放全部缩略图 URL</button>
+    </div>
+    <div class="thumbs" id="batchThumbs" style="margin-top:14px"></div>
+    <pre id="batchLog">尚未执行。</pre>
+  </section>
+
+  <section>
+    <h2>3. 页面令牌交换批量授权（page → batch grant）</h2>
+    <p class="hint">一次性 page 令牌仅用于交换一枚短时 batch 授权；授权内每个 item 可用一次，并发的不同 item 全部放行，重复 item 才判定重放。</p>
+    <div class="row">
+      <button id="sessionBtn">签发 page 令牌 → 交换 → 加载</button>
+      <button id="replayItemBtn" class="secondary" disabled>重复请求 item=w64（应 401）</button>
+    </div>
+    <div class="thumbs" id="sessionThumbs" style="margin-top:14px"></div>
+    <pre id="sessionLog">尚未执行。</pre>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const ctx = () => ({ file: $('file').value, version: $('version').value, user: $('user').value });
+const show = (id, obj) => $(id).textContent = typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2);
+
+async function post(path, body) {
+  const res = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const data = await res.json().catch(() => ({}));
+  return { status: res.status, data };
+}
+async function getStatus(url) {
+  const res = await fetch(url, { headers: { 'X-User-ID': ctx().user }, cache: 'no-store' });
+  let data = null; try { data = await res.json(); } catch {}
+  return { status: res.status, reason: data && data.reason };
+}
+function tile(container, label, url) {
+  const box = document.createElement('div'); box.className = 'thumb';
+  const img = new Image(); img.src = url; img.alt = label;
+  const state = document.createElement('span'); state.textContent = label + ' · 请求中…';
+  img.onload = () => { state.innerHTML = label + ' · <span class="ok">200 成功</span>'; };
+  img.onerror = () => { state.innerHTML = label + ' · <span class="bad">被拒绝</span>'; };
+  box.append(img, state); container.append(box);
+}
+
+$('singleBtn').onclick = async () => {
+  const issued = await post('/api/preview/tokens', { ...ctx(), purpose: 'preview', ttl_seconds: 300 });
+  const url = issued.data.preview_url + '&user=' + encodeURIComponent(ctx().user);
+  const first = await getStatus(url);
+  const second = await getStatus(url);
+  show('singleLog', { issued: issued.status, first_use: first, replay: second });
+};
+
+let batchURLs = [];
+$('batchBtn').onclick = async () => {
+  $('batchThumbs').replaceChildren();
+  const res = await post('/api/preview/batch', { ...ctx(), profiles: ['w64', 'w128', 'w256', 'w512'], ttl_seconds: 300 });
+  batchURLs = (res.data.items || []).map((it) => it.url + '&user=' + encodeURIComponent(ctx().user));
+  batchURLs.forEach((url, i) => tile($('batchThumbs'), res.data.items[i].item, url));
+  $('replayBatchBtn').disabled = false;
+  show('batchLog', { issued: res.status, batch_id: res.data.batch_id, tokens: (res.data.tokens || []).length });
+};
+$('replayBatchBtn').onclick = async () => {
+  const results = await Promise.all(batchURLs.map(getStatus));
+  show('batchLog', { replay_results: results });
+};
+
+let sessionTemplate = '';
+$('sessionBtn').onclick = async () => {
+  $('sessionThumbs').replaceChildren();
+  const page = await post('/api/preview/tokens',
+    { ...ctx(), purpose: 'page', items: ['w64', 'w128', 'w256'], ttl_seconds: 300 });
+  const exchanged = await post('/api/preview/session', { token: page.data.token });
+  sessionTemplate = exchanged.data.thumbnail_url_template + '&user=' + encodeURIComponent(ctx().user);
+  (exchanged.data.items || []).forEach((item) =>
+    tile($('sessionThumbs'), item, sessionTemplate.replace('{item}', item)));
+  $('replayItemBtn').disabled = false;
+  show('sessionLog', { page_token_issue: page.status, session: exchanged.status, items: exchanged.data.items });
+};
+$('replayItemBtn').onclick = async () => {
+  const result = await getStatus(sessionTemplate.replace('{item}', 'w64'));
+  show('sessionLog', { repeated_item_w64: result });
+};
+</script>
+</body>
+</html>
