@@ -1,0 +1,9 @@
+# Runtime data (share records and throttle state)
+/data/
+
+# Local build output
+/bin/
+
+# Editor and OS files
+*.swp
+.DS_Store
