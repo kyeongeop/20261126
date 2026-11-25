@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分享安全中心 · 批量撤销</title>
+<style>
+:root{
+  --bg:#f4f6fa; --panel:#ffffff; --ink:#1c2433; --ink-2:#5b6678; --ink-3:#8a94a6;
+  --line:#e4e8f0; --brand:#2456e6; --brand-d:#1b41b8; --brand-bg:#eef3ff;
+  --danger:#d83a3a; --danger-d:#b3261e; --danger-bg:#fdeeee;
+  --ok:#15803d; --ok-bg:#e9f7ef; --warn:#b45309; --warn-bg:#fdf3e3;
+  --radius:14px; --shadow:0 1px 2px rgba(16,24,40,.05),0 8px 24px -12px rgba(16,24,40,.18);
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);
+  font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--ink)}
+.topbar{background:linear-gradient(120deg,#101a33 0%,#1d3a8a 60%,#2456e6 100%);color:#fff;padding:22px 32px 0}
+.topbar h1{margin:0;font-size:21px;display:flex;align-items:center;gap:10px;letter-spacing:.5px}
+.topbar p{margin:6px 0 18px;color:#c6d4f7;font-size:13px}
+.tabs{display:flex;gap:6px}
+.tab{background:transparent;border:0;color:#b9c8ef;padding:10px 18px;border-radius:10px 10px 0 0;font-weight:600;border-bottom:3px solid transparent}
+.tab:hover{color:#fff}
+.tab.active{background:var(--bg);color:var(--brand-d);border-bottom-color:var(--brand)}
+.wrap{max-width:1240px;margin:24px auto 64px;padding:0 24px}
+.page{display:none}.page.active{display:block}
+.grid{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
+@media (max-width:980px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+.card h2{font-size:15px;margin:0 0 4px;display:flex;align-items:center;gap:8px}
+.card .sub{color:var(--ink-3);font-size:12px;margin:0 0 16px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+.field input[type=text],.field input[type=date],.field select,.field textarea{
+  width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;background:#fbfcfe;outline:none;transition:.15s}
+.field textarea{resize:vertical;min-height:76px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px rgba(36,86,230,.12)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.checkline{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2);user-select:none}
+.checkline input{width:15px;height:15px;accent-color:var(--brand)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:10px;border:1px solid transparent;
+  padding:10px 16px;font-weight:700;transition:.15s;white-space:nowrap}
+.btn-primary{background:var(--brand);color:#fff}.btn-primary:hover{background:var(--brand-d)}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:var(--danger-d)}
+.btn-ghost{background:#fff;border-color:var(--line);color:var(--ink-2)}.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.hint{font-size:12px;color:var(--ink-3)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{border:1px solid var(--line);background:#f7f9fd;color:var(--ink-2);border-radius:999px;padding:3px 11px;font-size:12px}
+.chip:hover{border-color:var(--brand);color:var(--brand)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:18px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:15px 17px;background:#fbfcfe}
+.stat .k{font-size:12.5px;color:var(--ink-3);display:flex;align-items:center;gap:6px}
+.stat .v{font-size:30px;font-weight:800;line-height:1.25;font-variant-numeric:tabular-nums}
+.stat.brand .v{color:var(--brand)}
+.stat.danger{background:var(--danger-bg);border-color:#f3c9c9}
+.stat.danger .v{color:var(--danger-d)}
+.stat.ok .v{color:var(--ok)}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:11px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:10px 13px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#f7f9fd;color:var(--ink-2);font-size:12px;white-space:nowrap;position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#f8faff}
+.fname{font-weight:650}
+.fsub{color:var(--ink-3);font-size:12px;font-family:var(--mono)}
+.badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;white-space:nowrap}
+.badge.active{background:var(--ok-bg);color:var(--ok)}
+.badge.revoked{background:#eceff5;color:#52607a}
+.badge.expired{background:var(--warn-bg);color:var(--warn)}
+.badge.committed{background:var(--ok-bg);color:var(--ok)}
+.empty{border:1.5px dashed var(--line);border-radius:12px;padding:44px 20px;text-align:center;color:var(--ink-3)}
+.empty .big{font-size:34px;margin-bottom:8px}
+.confirm-box{margin-top:18px;border:1px solid #f0c9c9;background:linear-gradient(180deg,#fff7f7,#fdeeee);border-radius:12px;padding:18px}
+.confirm-box h3{margin:0 0 4px;color:var(--danger-d);font-size:15px}
+.result-banner{margin-bottom:16px;border:1px solid #bfe5cd;background:var(--ok-bg);color:#14532d;border-radius:12px;padding:14px 16px;display:none}
+.result-banner.show{display:block}
+.result-banner .bid{font-family:var(--mono);font-weight:700}
+.audit-item{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;background:#fff}
+.audit-head{display:grid;grid-template-columns:190px 1fr auto;gap:14px;padding:14px 16px;cursor:pointer;align-items:center}
+.audit-head:hover{background:#f8faff}
+.audit-body{display:none;border-top:1px solid var(--line);padding:14px 16px;background:#fbfcfe}
+.audit-item.open .audit-body{display:block}
+.audit-meta{font-size:12.5px;color:var(--ink-2)}
+.audit-meta b{color:var(--ink)}
+.reason-box{background:#fff;border-left:3px solid var(--brand);padding:8px 12px;border-radius:0 8px 8px 0;margin:8px 0}
+.crit{display:inline-block;background:var(--brand-bg);color:var(--brand-d);border-radius:6px;padding:1px 8px;margin:2px 4px 2px 0;font-size:12px;font-weight:600}
+.modal-mask{position:fixed;inset:0;background:rgba(16,24,40,.5);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal-mask.show{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:520px;width:100%;padding:24px;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.modal h3{margin:0 0 12px;font-size:18px;display:flex;gap:9px;align-items:center}
+.modal .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.toast-wrap{position:fixed;top:18px;right:18px;z-index:80;display:flex;flex-direction:column;gap:10px}
+.toast{background:#1c2433;color:#fff;padding:11px 16px;border-radius:10px;box-shadow:var(--shadow);max-width:380px;font-size:13.5px;animation:slidein .2s ease}
+.toast.err{background:var(--danger-d)}.toast.ok{background:var(--ok)}
+@keyframes slidein{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.toolbar input{flex:1;min-width:200px;border:1px solid var(--line);border-radius:9px;padding:9px 12px}
+.seg{display:inline-flex;background:#eef1f7;border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:6px 13px;border-radius:8px;font-weight:650;color:var(--ink-2);font-size:13px}
+.seg button.on{background:#fff;color:var(--brand-d);box-shadow:0 1px 3px rgba(16,24,40,.15)}
+.muted{color:var(--ink-3)}
+.mono{font-family:var(--mono);font-size:12px}
+.kvline{font-size:12.5px;color:var(--ink-2);margin:3px 0}
+.count-pill{background:var(--danger);color:#fff;border-radius:999px;min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;padding:0 6px;font-weight:700}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9db8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+    分享安全中心 · 批量撤销外链
+  </h1>
+  <p>安全事件响应：按负责人 / 目录 / 创建时间 / 链接状态圈选分享，预览受影响文件，填写原因后原子执行，审计全程留痕。</p>
+  <nav class="tabs">
+    <button class="tab active" data-page="revoke">批量撤销</button>
+    <button class="tab" data-page="shares">链接总览</button>
+    <button class="tab" data-page="audits">审计记录 <span id="auditTabCount" class="count-pill" style="display:none">0</span></button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <!-- ============ 批量撤销 ============ -->
+  <section class="page active" id="page-revoke">
+    <div class="grid">
+      <div class="card">
+        <h2>① 圈选撤销范围</h2>
+        <p class="sub">四个维度可自由组合，留空表示不限制该维度。</p>
+
+        <div class="field">
+          <label for="fOwner">负责人</label>
+          <input type="text" id="fOwner" list="ownerList" placeholder="如：张伟 或 u003" autocomplete="off">
+          <datalist id="ownerList"></datalist>
+        </div>
+
+        <div class="field">
+          <label for="fDir">目录</label>
+          <input type="text" id="fDir" list="dirList" placeholder="如：/研发/API" autocomplete="off">
+          <datalist id="dirList"></datalist>
+          <label class="checkline" style="margin-top:8px">
+            <input type="checkbox" id="fRecursive" checked> 包含所有子目录（前缀匹配）
+          </label>
+        </div>
+
+        <div class="field">
+          <label>创建时间区间</label>
+          <div class="row2">
+            <input type="date" id="fFrom" aria-label="开始日期">
+            <input type="date" id="fTo" aria-label="结束日期">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>链接状态</label>
+          <div class="seg" id="statusSeg">
+            <button type="button" data-status="active" class="on">有效中</button>
+            <button type="button" data-status="all">全部</button>
+            <button type="button" data-status="revoked">已撤销</button>
+            <button type="button" data-status="expired">已过期</button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="btnPreview">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          预览受影响范围
+        </button>
+        <button class="btn btn-ghost btn-block" style="margin-top:8px" id="btnReset">清空筛选条件</button>
+      </div>
+
+      <div>
+        <div class="result-banner" id="resultBanner"></div>
+        <div id="previewEmpty" class="card">
+          <div class="empty">
+            <div class="big">🛡️</div>
+            <div style="font-size:15px;font-weight:700;color:var(--ink-2)">设置左侧条件后点击“预览受影响范围”</div>
+            <div style="margin-top:6px">提交撤销前会先展示将撤销的链接数与<b>受影响文件数</b>，不会直接执行。</div>
+          </div>
+        </div>
+        <div id="previewPanel" style="display:none"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 链接总览 ============ -->
+  <section class="page" id="page-shares">
+    <div class="card">
+      <h2>全部分享链接</h2>
+      <p class="sub">撤销不会删除链接记录，状态会变为“已撤销”并保留原因与批次号。</p>
+      <div class="toolbar">
+        <input type="text" id="shareSearch" placeholder="搜索文件名 / 负责人 / 目录 / Token…">
+        <div class="seg" id="shareStatusSeg">
+          <button type="button" data-status="" class="on">全部</button>
+          <button type="button" data-status="active">有效中</button>
+          <button type="button" data-status="revoked">已撤销</button>
+          <button type="button" data-status="expired">已过期</button>
+        </div>
+        <button class="btn btn-ghost" id="btnReloadShares">刷新</button>
+      </div>
+      <div id="sharesTable"></div>
+    </div>
+  </section>
+
+  <!-- ============ 审计记录 ============ -->
+  <section class="page" id="page-audits">
+    <div class="card">
+      <h2>审计记录</h2>
+      <p class="sub">每一批撤销对应一条不可变审计事件，包含条件、原因、操作人、链接与文件清单，持久化在数据文件中。</p>
+      <div class="toolbar"><span class="muted" id="auditSummary"></span>
+        <button class="btn btn-ghost" id="btnReloadAudits" style="margin-left:auto">刷新审计</button>
+      </div>
+      <div id="auditList"></div>
+    </div>
+  </section>
+</main>
+
+<div class="modal-mask" id="confirmMask">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h3 id="confirmTitle">⚠️ 确认执行批量撤销</h3>
+    <div id="confirmSummary"></div>
+    <div class="field" style="margin-top:14px">
+      <label for="mOperator">操作人 / 管理员</label>
+      <input type="text" id="mOperator" placeholder="admin" value="安全管理员">
+    </div>
+    <div class="field">
+      <label for="mReason">撤销原因（必填，将写入审计）</label>
+      <textarea id="mReason" maxlength="500" placeholder="例如：安全事件 SEC-2026-1126：外发链接存在泄露风险，按应急响应要求批量撤销"></textarea>
+      <div class="chips" id="reasonChips">
+        <button type="button" class="chip">安全事件：外链凭证疑似泄露，应急收敛</button>
+        <button type="button" class="chip">员工离职：交接前撤销其负责的全部外链</button>
+        <button type="button" class="chip">目录迁移：旧目录外链统一失效</button>
+        <button type="button" class="chip">到期整改：清理不符合外发规范的链接</button>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost" id="btnCancelConfirm">再检查一下</button>
+      <button class="btn btn-danger" id="btnDoRevoke">确认撤销</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+<script id="appJS">
+/* JS-PLACEHOLDER */
+'use strict';
+const $ = (id) => document.getElementById(id);
+
+const state = {
+  meta: null,
+  status: 'active',
+  shareStatus: '',
+  preview: null,
+  shares: [],
+  audits: [],
+};
+
+function escapeHtml(v) {
+  return String(v == null ? '' : v)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function fmtTime(s) {
+  if (!s) return '—';
+  const d = new Date(s);
+  if (isNaN(d)) return s;
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function fmtDate(s) {
+  if (!s) return '不限';
+  const d = new Date(s);
+  return isNaN(d) ? String(s).slice(0, 10) : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+const STATUS_LABEL = { active: '有效中', revoked: '已撤销', expired: '已过期' };
+function statusBadge(st) {
+  return `<span class="badge ${escapeHtml(st)}">${{
+    active: '● 有效中', revoked: '✕ 已撤销', expired: '◔ 已过期'
+  }[st] || escapeHtml(st)}</span>`;
+}
+
+function toast(msg, kind = '') {
+  const el = document.createElement('div');
+  el.className = `toast ${kind}`;
+  el.textContent = msg;
+  $('toastWrap').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = '.3s'; }, 3600);
+  setTimeout(() => el.remove(), 4000);
+}
+
+async function api(path, options = {}) {
+  const resp = await fetch(path, {
+    headers: options.body ? { 'Content-Type': 'application/json' } : {},
+    ...options,
+  });
+  let data = null;
+  try { data = await resp.json(); } catch (_) { /* 非 JSON */ }
+  if (!resp.ok) {
+    const msg = data && data.error && data.error.message ? data.error.message : `请求失败（HTTP ${resp.status}）`;
+    const err = new Error(msg);
+    err.status = resp.status;
+    err.code = data && data.error && data.error.code;
+    throw err;
+  }
+  return data;
+}
+
+/* ---------- 选项卡 ---------- */
+document.querySelectorAll('.tab').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach((b) => b.classList.toggle('active', b === btn));
+    const name = btn.dataset.page;
+    document.querySelectorAll('.page').forEach((p) => p.classList.toggle('active', p.id === `page-${name}`));
+    if (name === 'shares') loadShares();
+    if (name === 'audits') loadAudits();
+  });
+});
+
+/* ---------- 状态分段选择 ---------- */
+function bindSeg(containerId, onPick) {
+  const box = $(containerId);
+  box.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+    box.querySelectorAll('button').forEach((x) => x.classList.remove('on'));
+    b.classList.add('on');
+    onPick(b.dataset.status);
+  }));
+}
+bindSeg('statusSeg', (v) => { state.status = v; });
+bindSeg('shareStatusSeg', (v) => { state.shareStatus = v; renderShares(); });
+
+/* ---------- 筛选条件 ---------- */
+function collectCriteria() {
+  return {
+    owner: $('fOwner').value.trim(),
+    directory: $('fDir').value.trim(),
+    recursive: $('fRecursive').checked,
+    created_from: $('fFrom').value || '',
+    created_to: $('fTo').value || '',
+    status: state.status,
+  };
+}
+
+function criteriaChips(c) {
+  const chips = [];
+  chips.push(`负责人：${c.owner ? escapeHtml(c.owner) : '全部'}`);
+  chips.push(`目录：${c.directory ? escapeHtml(c.directory) + (c.recursive ? '（含子目录）' : '（仅当前目录）') : '全部'}`);
+  chips.push(`创建：${c.created_from || '最早'} ~ ${c.created_to || '最新'}`);
+  chips.push(`状态：${c.status === 'all' || !c.status ? '全部' : (STATUS_LABEL[c.status] || c.status)}`);
+  return chips.map((t) => `<span class="crit">${t}</span>`).join('');
+}
+
+$('btnReset').addEventListener('click', () => {
+  ['fOwner', 'fDir', 'fFrom', 'fTo'].forEach((id) => { $(id).value = ''; });
+  $('fRecursive').checked = true;
+  state.status = 'active';
+  document.querySelectorAll('#statusSeg button').forEach((b) =>
+    b.classList.toggle('on', b.dataset.status === 'active'));
+  state.preview = null;
+  $('previewPanel').style.display = 'none';
+  $('previewEmpty').style.display = '';
+});
+
+/* ---------- 元数据下拉 ---------- */
+async function loadMeta() {
+  try {
+    state.meta = await api('/api/meta');
+    $('ownerList').innerHTML = state.meta.owners
+      .map((o) => `<option value="${escapeHtml(o.name)}">${escapeHtml(o.id)}</option>`).join('');
+    $('dirList').innerHTML = state.meta.directories
+      .map((d) => `<option value="${escapeHtml(d)}"></option>`).join('');
+  } catch (e) {
+    toast('加载筛选项失败：' + e.message, 'err');
+  }
+}
+
+/* ---------- 预览 ---------- */
+$('btnPreview').addEventListener('click', doPreview);
+
+async function doPreview() {
+  const btn = $('btnPreview');
+  btn.disabled = true;
+  btn.textContent = '正在统计…';
+  try {
+    const criteria = collectCriteria();
+    state.preview = await api('/api/shares/revoke/preview', {
+      method: 'POST',
+      body: JSON.stringify(criteria),
+    });
+    renderPreview(criteria);
+  } catch (e) {
+    toast(e.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg> 重新预览`;
+  }
+}
+
+function renderPreview(criteria) {
+  const p = state.preview;
+  $('previewEmpty').style.display = 'none';
+  const panel = $('previewPanel');
+  panel.style.display = '';
+
+  const noTarget = p.revocable_links === 0;
+  const filesRows = p.files.map((f) => `
+    <tr>
+      <td><div class="fname">${escapeHtml(f.file_name)}</div><div class="fsub">${escapeHtml(f.file_id)}</div></td>
+      <td>${escapeHtml(f.directory)}</td>
+      <td>${escapeHtml(f.owner_name)}</td>
+      <td><span class="badge active">${f.active_links} 条有效链接</span></td>
+    </tr>`).join('');
+
+  const linkRows = p.items.slice(0, 50).map((s) => `
+    <tr>
+      <td><div class="fname">${escapeHtml(s.file_name)}</div><div class="fsub">${escapeHtml(s.link_token)}</div></td>
+      <td>${escapeHtml(s.directory)}</td>
+      <td>${escapeHtml(s.owner)}</td>
+      <td class="mono">${fmtDate(s.created_at)}</td>
+    </tr>`).join('');
+
+  panel.innerHTML = `
+    <div class="card">
+      <h2>② 预览影响范围</h2>
+      <p class="sub">以下数字由服务端按当前条件实时计算；只有“有效中”的链接会被撤销，已撤销 / 已过期记录保持不变。</p>
+      <div style="margin-bottom:14px">${criteriaChips(criteria)}</div>
+      <div class="stats">
+        <div class="stat danger"><div class="k">将撤销链接</div><div class="v">${p.revocable_links}</div></div>
+        <div class="stat brand"><div class="k">⚠ 受影响文件数（去重）</div><div class="v">${p.affected_files}</div></div>
+        <div class="stat"><div class="k">条件命中链接总数</div><div class="v">${p.matched_links}</div></div>
+        <div class="stat ok"><div class="k">条件命中文件总数</div><div class="v">${p.matched_files}</div></div>
+      </div>
+      ${noTarget ? `<div class="empty"><div class="big">🔍</div><b>当前条件下没有“有效中”的链接可撤销。</b><div style="margin-top:6px">可把链接状态切换为“全部”查看命中的历史记录，或调整筛选条件。</div></div>` : `
+      <h2 style="font-size:14px;margin:18px 0 8px">受影响文件（${p.affected_files}）</h2>
+      <div class="table-wrap" style="max-height:280px">
+        <table><thead><tr><th>文件</th><th>目录</th><th>负责人</th><th>有效外链</th></tr></thead>
+        <tbody>${filesRows || '<tr><td colspan=4 class=muted>无</td></tr>'}</tbody></table>
+      </div>
+      <details style="margin-top:14px">
+        <summary style="cursor:pointer;font-weight:700;color:var(--ink-2)">查看将撤销的链接明细（${p.revocable_links}，最多展示 50 条）</summary>
+        <div class="table-wrap" style="margin-top:10px;max-height:320px">
+          <table><thead><tr><th>文件 / Token</th><th>目录</th><th>负责人</th><th>创建时间</th></tr></thead>
+          <tbody>${linkRows}</tbody></table>
+        </div>
+      </details>
+      <div class="confirm-box">
+        <h3>③ 填写原因并提交</h3>
+        <p class="hint" style="margin:0 0 10px">提交后 ${p.revocable_links} 条链接将在<b>同一个事务</b>内撤销：任何一条失败都会整体回滚；成功后审计记录永久保留。</p>
+        <button class="btn btn-danger btn-block" id="btnOpenConfirm">
+          批量撤销 ${p.revocable_links} 条链接 · 影响 ${p.affected_files} 个文件
+        </button>
+      </div>`}
+    </div>`;
+
+  const openBtn = $('btnOpenConfirm');
+  if (openBtn) openBtn.addEventListener('click', openConfirm);
+}
+
+/* ---------- 结果横幅 ---------- */
+function showSuccess(result) {
+  const banner = $('resultBanner');
+  banner.classList.add('show');
+  banner.innerHTML = `✅ <b>批量撤销已提交。</b>
+    批次号 <span class="bid">${escapeHtml(result.batch_id)}</span>：
+    撤销 <b>${result.revoked_links}</b> 条链接，影响 <b>${result.affected_files}</b> 个文件。
+    原因：${escapeHtml(result.reason)}
+    <button class="btn btn-ghost" style="padding:4px 12px;margin-left:10px" id="btnGotoAudit">查看审计</button>`;
+  $('btnGotoAudit').addEventListener('click', () => document.querySelector('.tab[data-page=audits]').click());
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ---------- 确认弹窗 + 执行 ---------- */
+function openConfirm() {
+  if (!state.preview || state.preview.revocable_links === 0) {
+    toast('没有可撤销的链接', 'err');
+    return;
+  }
+  const c = collectCriteria();
+  const p = state.preview;
+  $('confirmSummary').innerHTML = `
+    <div class="stats" style="margin-bottom:6px">
+      <div class="stat danger"><div class="k">撤销链接</div><div class="v">${p.revocable_links}</div></div>
+      <div class="stat brand"><div class="k">受影响文件</div><div class="v">${p.affected_files}</div></div>
+    </div>
+    <div>${criteriaChips(c)}</div>
+    <p class="hint" style="margin:10px 0 0">该操作事务化执行：要么全部成功，要么整体回滚。撤销后链接立即失效，但记录与审计不会被删除。</p>`;
+  $('confirmMask').classList.add('show');
+  setTimeout(() => $('mReason').focus(), 50);
+}
+
+function closeConfirm() { $('confirmMask').classList.remove('show'); }
+$('btnCancelConfirm').addEventListener('click', closeConfirm);
+$('confirmMask').addEventListener('click', (e) => { if (e.target === $('confirmMask')) closeConfirm(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeConfirm(); });
+
+$('reasonChips').addEventListener('click', (e) => {
+  if (e.target.classList.contains('chip')) $('mReason').value = e.target.textContent.trim();
+});
+
+$('btnDoRevoke').addEventListener('click', async () => {
+  const reason = $('mReason').value.trim();
+  if (!reason) {
+    toast('请先填写撤销原因', 'err');
+    $('mReason').focus();
+    return;
+  }
+  const btn = $('btnDoRevoke');
+  btn.disabled = true;
+  btn.textContent = '事务提交中…';
+  try {
+    const result = await api('/api/shares/batch-revoke', {
+      method: 'POST',
+      body: JSON.stringify({
+        ...collectCriteria(),
+        reason,
+        operator: $('mOperator').value.trim() || 'admin',
+      }),
+    });
+    closeConfirm();
+    showSuccess(result);
+    toast(`已撤销 ${result.revoked_links} 条链接`, 'ok');
+    state.preview = null;
+    $('previewPanel').style.display = 'none';
+    $('previewEmpty').style.display = '';
+    await Promise.all([loadAudits(), loadShares()]);
+  } catch (e) {
+    toast(e.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '确认撤销';
+  }
+});
+
+/* ---------- 链接总览 ---------- */
+async function loadShares() {
+  try {
+    const data = await api('/api/shares');
+    state.shares = data.items || [];
+    renderShares();
+  } catch (e) {
+    $('sharesTable').innerHTML = `<div class="empty">加载失败：${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function renderShares() {
+  const kw = $('shareSearch').value.trim().toLowerCase();
+  let rows = state.shares;
+  if (state.shareStatus) rows = rows.filter((s) => s.status === state.shareStatus);
+  if (kw) {
+    rows = rows.filter((s) => [s.file_name, s.directory, s.owner, s.link_token, s.id]
+      .some((v) => String(v || '').toLowerCase().includes(kw)));
+  }
+  if (!rows.length) {
+    $('sharesTable').innerHTML = `<div class="empty">没有符合条件的链接</div>`;
+    return;
+  }
+  $('sharesTable').innerHTML = `
+    <div class="table-wrap" style="max-height:640px">
+    <table><thead><tr><th>文件</th><th>目录</th><th>负责人</th><th>创建时间</th><th>状态</th><th>撤销信息</th></tr></thead>
+    <tbody>${rows.map((s) => `
+      <tr>
+        <td><div class="fname">${escapeHtml(s.file_name)}</div>
+            <div class="fsub">${escapeHtml(s.id)} · ${escapeHtml(s.link_token)}</div></td>
+        <td>${escapeHtml(s.directory)}</td>
+        <td>${escapeHtml(s.owner)}<div class="fsub">${escapeHtml(s.owner_id)}</div></td>
+        <td class="mono">${fmtTime(s.created_at)}</td>
+        <td>${statusBadge(s.status)}</td>
+        <td>${s.status === 'revoked' ? `
+          <div>${escapeHtml(s.revoke_reason || '')}</div>
+          <div class="fsub">${escapeHtml(s.revoke_operator || '')} · ${fmtTime(s.revoked_at)}</div>
+          <div class="fsub">${escapeHtml(s.revoke_batch_id || '')}</div>` : '<span class="muted">—</span>'}
+        </td>
+      </tr>`).join('')}
+    </tbody></table></div>
+    <p class="hint" style="margin-top:8px">共 ${rows.length} 条。</p>`;
+}
+$('shareSearch').addEventListener('input', renderShares);
+$('btnReloadShares').addEventListener('click', loadShares);
+
+/* ---------- 审计记录 ---------- */
+async function loadAudits() {
+  try {
+    const data = await api('/api/admin/audits');
+    state.audits = data.items || [];
+    const n = state.audits.length;
+    const pill = $('auditTabCount');
+    pill.style.display = n ? 'inline-flex' : 'none';
+    pill.textContent = n;
+    $('auditSummary').textContent = n ? `共 ${n} 批撤销记录，按时间倒序；点击任意记录查看完整目标清单。` : '暂无批量撤销记录。';
+    renderAudits();
+  } catch (e) {
+    $('auditList').innerHTML = `<div class="empty">审计加载失败：${escapeHtml(e.message)}</div>`;
+  }
+}
+
+function auditCriteriaText(c) {
+  if (!c) return '';
+  return [
+    `负责人=${c.owner || '全部'}`,
+    `目录=${c.directory || '全部'}${c.directory ? (c.recursive ? '(含子目录)' : '(仅当前)') : ''}`,
+    `创建=${fmtDate(c.created_from)}~${c.created_to ? fmtDate(new Date(new Date(c.created_to).getTime() - 86400000)) : '最新'}`,
+    `状态=${c.status && c.status !== 'all' ? c.status : '全部'}`,
+  ].join('　');
+}
+
+function renderAudits() {
+  if (!state.audits.length) {
+    $('auditList').innerHTML = `<div class="empty"><div class="big">📋</div>还没有审计记录，去“批量撤销”执行一次操作吧。</div>`;
+    return;
+  }
+  $('auditList').innerHTML = state.audits.map((a, idx) => `
+    <div class="audit-item" data-idx="${idx}">
+      <div class="audit-head">
+        <div><span class="mono"><b>${escapeHtml(a.batch_id)}</b></span>
+          <div class="muted">${fmtTime(a.finished_at)}</div></div>
+        <div class="audit-meta">
+          <div>操作人：<b>${escapeHtml(a.operator)}</b> · 撤销 <b style="color:var(--danger-d)">${a.revoked_links}</b> 条链接 · 影响 <b>${a.affected_files}</b> 个文件（条件命中 ${a.matched_links}）</div>
+          <div class="reason-box">📝 ${escapeHtml(a.reason)}</div>
+          <div class="muted">${escapeHtml(auditCriteriaText(a.criteria))}</div>
+        </div>
+        <span class="badge committed">✓ 已提交</span>
+      </div>
+      <div class="audit-body">
+        <div class="kvline"><b>开始：</b>${fmtTime(a.started_at)}　<b>完成：</b>${fmtTime(a.finished_at)}</div>
+        <div class="kvline"><b>链接 ID：</b><span class="mono">${(a.share_ids || []).map(escapeHtml).join(', ')}</span></div>
+        <div class="table-wrap" style="margin-top:10px;max-height:300px">
+          <table><thead><tr><th>链接 ID</th><th>文件</th><th>目录</th><th>负责人</th><th>Token</th><th>链接创建时间</th></tr></thead>
+          <tbody>${(a.targets || []).map((t) => `
+            <tr><td class="mono">${escapeHtml(t.share_id)}</td>
+            <td>${escapeHtml(t.file_name)}<div class="fsub">${escapeHtml(t.file_id)}</div></td>
+            <td>${escapeHtml(t.directory)}</td><td>${escapeHtml(t.owner)}</td>
+            <td class="mono">${escapeHtml(t.link_token)}</td><td class="mono">${fmtTime(t.created_at)}</td></tr>`).join('')}
+          </tbody></table>
+        </div>
+      </div>
+    </div>`).join('');
+
+  document.querySelectorAll('.audit-head').forEach((h) =>
+    h.addEventListener('click', () => h.parentElement.classList.toggle('open')));
+}
+$('btnReloadAudits').addEventListener('click', loadAudits);
+
+/* ---------- 初始化 ---------- */
+loadMeta();
+loadShares();
+loadAudits();
+</script>
+</body>
+</html>
