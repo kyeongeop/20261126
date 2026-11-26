@@ -1,0 +1,9 @@
+{
+  "allowed_directories": [
+    "$ORIGIN/../lib",
+    "$ORIGIN",
+    "/home/hj/userfeedback3/uid6-0052/fixtures/lib"
+  ],
+  "ld_library_path": [],
+  "max_depth": 16
+}

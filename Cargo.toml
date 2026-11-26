@@ -1,0 +1,18 @@
+[package]
+name = "dynlib_risk"
+version = "0.1.0"
+edition = "2021"
+description = "发布制品管理平台 - 动态库路径风险面板"
+
+[[bin]]
+name = "dlr"
+path = "src/main.rs"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+object = "0.36"
+
+[profile.release]
+lto = true
