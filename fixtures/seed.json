@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "claim_hold_hours": 72,
+    "default_reservation_days": 90,
+    "max_reservation_days": 3650,
+    "max_pending_claims_per_user": 3
+  },
+  "users": [
+    {
+      "id": "alice",
+      "name": "Alice Chen",
+      "role": "publisher",
+      "token_sha256": "bba775a1794a2ccaa524798e32cea98187c9a32d80433d760a92d449bfddff66"
+    },
+    {
+      "id": "bob",
+      "name": "Bob Liu",
+      "role": "publisher",
+      "token_sha256": "84c60dc436211b8b0816c38aa8bd40567b75d7fc47fdecab65f40885348c6bbd"
+    },
+    {
+      "id": "carol",
+      "name": "Carol Wu",
+      "role": "publisher",
+      "token_sha256": "ec946025b14a2a8b44a16d56cdd2a3978902986d765f5ebc486f7662c955a214"
+    },
+    {
+      "id": "admin",
+      "name": "Repository Admin",
+      "role": "admin",
+      "token_sha256": "9c588b0babd6a996be956ccc040751f16fb7f1c2cef21d40b265621d37b0a8bc"
+    }
+  ],
+  "namespaces": {
+    "legacy-tools": {
+      "name": "legacy-tools",
+      "state": "locked",
+      "created_at": "2025-03-10T08:00:00Z",
+      "updated_at": "2025-03-10T08:00:00Z"
+    },
+    "team-alpha": {
+      "name": "team-alpha",
+      "state": "reserved",
+      "owner_id": "alice",
+      "owner_name": "Alice Chen",
+      "reserved_until": "2027-05-26T00:00:00Z",
+      "created_at": "2026-10-01T02:00:00Z",
+      "updated_at": "2026-10-01T02:00:00Z"
+    }
+  },
+  "claims": [],
+  "packages": {
+    "legacy-tools": [
+      {
+        "namespace": "legacy-tools",
+        "name": "core",
+        "version": "1.2.3",
+        "published_by": "legacy-build",
+        "published_at": "2025-03-10T09:00:00Z"
+      }
+    ],
+    "team-alpha": [
+      {
+        "namespace": "team-alpha",
+        "name": "service",
+        "version": "0.4.1",
+        "published_by": "alice",
+        "published_at": "2026-10-02T03:00:00Z"
+      }
+    ]
+  },
+  "audit": []
+}
