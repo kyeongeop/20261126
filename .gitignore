@@ -1,0 +1,7 @@
+/data/
+*.tar
+!**/testdata/**/*.tar
+/pkgrepo
+/package-repository
+*.test
+*.out
