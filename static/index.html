@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>事故时间线 · 冲突事件合并</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">TL</div>
+      <div>
+        <h1>事故时间线 · 冲突事件合并</h1>
+        <p class="subtitle">同一用户登录在两个系统中时间不一致 —— 对比来源时间、字段差异与可信度，再决定保留 / 拆分 / 标记未知</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <label class="analyst-box">
+        分析员
+        <input id="analyst" type="text" placeholder="analyst" value="lin.analyst" />
+      </label>
+      <button id="reset-demo" class="btn btn-ghost" title="清空并重建演示数据">重置演示数据</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="queue-column">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>候选合并队列</h2>
+          <button id="detect" class="btn btn-small">重新检测</button>
+        </div>
+        <div class="tabs" id="status-tabs">
+          <button data-status="pending" class="tab active">待处理</button>
+          <button data-status="unknown" class="tab">未知</button>
+          <button data-status="merged" class="tab">已合并</button>
+          <button data-status="split" class="tab">已拆分</button>
+          <button data-status="all" class="tab">全部</button>
+        </div>
+        <div id="candidate-list" class="candidate-list">
+          <div class="loading">加载中…</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail-column">
+      <div id="detail" class="panel detail-panel">
+        <div class="empty-state">从左侧选择一个候选合并组进行审查</div>
+      </div>
+    </section>
+  </main>
+
+  <section class="timeline-wrap">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>事故时间线</h2>
+        <span class="hint" id="timeline-hint"></span>
+        <button id="reload-timeline" class="btn btn-small">刷新时间线</button>
+      </div>
+      <div id="timeline" class="timeline"></div>
+    </div>
+  </section>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
