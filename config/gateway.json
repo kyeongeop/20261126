@@ -1,0 +1,34 @@
+{
+  "listen_address": "127.0.0.1:8443",
+  "log_level": "debug",
+  "unknown_sni": "default",
+  "handshake_timeout": "10s",
+  "certificates": [
+    {
+      "name": "exact-shop",
+      "cert_file": "../certs/exact-shop.pem",
+      "key_file": "../certs/exact-shop-key.pem"
+    },
+    {
+      "name": "wildcard-example",
+      "cert_file": "../certs/wildcard-example.pem",
+      "key_file": "../certs/wildcard-example-key.pem"
+    },
+    {
+      "name": "default",
+      "cert_file": "../certs/default.pem",
+      "key_file": "../certs/default-key.pem"
+    }
+  ],
+  "routes": [
+    {
+      "host": "shop.example.com",
+      "certificate": "exact-shop"
+    },
+    {
+      "host": "*.example.com",
+      "certificate": "wildcard-example"
+    }
+  ],
+  "default_certificate": "default"
+}
