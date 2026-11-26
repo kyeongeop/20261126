@@ -1,0 +1,5 @@
+2026-11-26 09:13:58,201 INFO worker-3 claimed order=ORD-8821 attempt=1
+2026-11-26 09:14:28,512 WARN worker-3 payment timeout order=ORD-8821 attempt=1
+2026-11-26 09:14:29,040 INFO worker-3 requeue order=ORD-8821 attempt=2
+2026-11-26 09:15:02,913 ERROR worker-3 payment provider unavailable order=ORD-8821
+2026-11-26 09:15:33,117 INFO worker-5 claimed order=ORD-8822 attempt=1

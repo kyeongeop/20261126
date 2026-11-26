@@ -1,0 +1,7 @@
+2026-11-26T09:14:02.118Z INFO  request_id=8f12 route=/checkout status=504 upstream=payments elapsed_ms=30002
+2026-11-26T09:14:03.441Z WARN  request_id=8f12 retry=1 upstream=payments elapsed_ms=30001
+2026-11-26T09:14:04.002Z ERROR request_id=8f13 connection_pool_active=100 connection_pool_max=100
+2026-11-26T09:14:05.775Z INFO  request_id=8f14 route=/checkout status=201 elapsed_ms=187
+2026-11-26T09:15:11.920Z WARN  request_id=9aa1 retry=2 upstream=payments elapsed_ms=30002
+2026-11-26T09:15:12.001Z ERROR request_id=9aa1 circuit_breaker=payments state=open
+2026-11-26T09:15:13.202Z INFO  request_id=9aa2 route=/health status=200 elapsed_ms=2

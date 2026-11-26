@@ -1,0 +1,17 @@
+{
+  "title": "Checkout latency incident 2026-11-26",
+  "evidence": {
+    "display_name": "API gateway log",
+    "filename": "logs/api-gateway-20261126.log",
+    "replacement_filename": "logs/api-gateway-20261126-replacement.log"
+  },
+  "actors": {
+    "uploader": "analyst.alice",
+    "reviewer": "reviewer.bob"
+  },
+  "sources": {
+    "upload": "incident-console",
+    "review": "evidence-browser"
+  },
+  "void_reason": "Duplicate upload; superseded by the normalized gateway export."
+}
