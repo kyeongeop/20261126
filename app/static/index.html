@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>事故时间线 · 案件交接</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">INCIDENT TIMELINE</p>
+        <h1>事故时间线 <span>案件交接</span></h1>
+      </div>
+      <div class="identity">
+        <label for="analyst-select">当前分析员</label>
+        <select id="analyst-select"></select>
+        <button id="add-analyst-button" class="secondary">新增分析员</button>
+      </div>
+    </header>
+
+    <main class="shell">
+      <aside class="case-panel">
+        <div class="panel-heading">
+          <h2>案件</h2>
+          <button id="new-case-button" class="secondary small">新建</button>
+        </div>
+        <div id="case-list" class="case-list">
+          <p class="empty">请先添加分析员。</p>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <div id="welcome" class="welcome">
+          <h2>从换班开始，不再遗漏线索</h2>
+          <p>创建案件并记录时间线，交接时自动汇总未确认事件、未完成假设、待补证据和权限说明。</p>
+        </div>
+
+        <div id="case-workspace" class="hidden">
+          <div class="case-heading">
+            <div>
+              <p class="eyebrow" id="case-eyebrow">CASE</p>
+              <h2 id="case-title"></h2>
+              <p id="case-meta" class="meta"></p>
+            </div>
+            <span id="access-badge" class="badge"></span>
+          </div>
+
+          <nav class="tabs">
+            <button data-tab="timeline" class="tab active">时间线</button>
+            <button data-tab="handover" class="tab">案件交接</button>
+          </nav>
+
+          <div id="timeline-tab" class="tab-panel">
+            <div class="grid-3">
+              <form id="event-form" class="card form-card">
+                <h3>记录事件</h3>
+                <input name="title" placeholder="事件标题" required />
+                <input name="occurred_at" type="datetime-local" required />
+                <textarea name="description" placeholder="事件经过"></textarea>
+                <button type="submit">添加到时间线</button>
+              </form>
+              <form id="hypothesis-form" class="card form-card">
+                <h3>记录假设</h3>
+                <textarea name="statement" placeholder="假设内容" required></textarea>
+                <select name="status">
+                  <option value="open">待调查</option>
+                  <option value="investigating">调查中</option>
+                  <option value="resolved">已解决</option>
+                  <option value="rejected">已排除</option>
+                </select>
+                <button type="submit">添加假设</button>
+              </form>
+              <form id="evidence-form" class="card form-card">
+                <h3>登记证据</h3>
+                <input name="title" placeholder="证据名称" required />
+                <textarea name="description" placeholder="待补充内容"></textarea>
+                <select name="status">
+                  <option value="pending">待补充</option>
+                  <option value="collected">已收集</option>
+                  <option value="verified">已核验</option>
+                </select>
+                <button type="submit">登记证据</button>
+              </form>
+            </div>
+
+            <div class="grid-3 timeline-lists">
+              <section class="card">
+                <div class="section-title">
+                  <h3>事件时间线</h3><span id="event-count">0</span>
+                </div>
+                <div id="event-list"></div>
+              </section>
+              <section class="card">
+                <div class="section-title">
+                  <h3>调查假设</h3><span id="hypothesis-count">0</span>
+                </div>
+                <div id="hypothesis-list"></div>
+              </section>
+              <section class="card">
+                <div class="section-title">
+                  <h3>证据清单</h3><span id="evidence-count">0</span>
+                </div>
+                <div id="evidence-list"></div>
+              </section>
+            </div>
+          </div>
+
+          <div id="handover-tab" class="tab-panel hidden">
+            <div class="handover-toolbar card">
+              <div>
+                <h3>生成交接清单</h3>
+                <p class="muted">交接清单会汇总未确认事件、未完成假设、待补证据与权限说明。</p>
+              </div>
+              <div class="inline-form">
+                <select id="successor-select"></select>
+                <button id="create-handover-button">发起交接</button>
+              </div>
+            </div>
+            <div id="handover-content"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast hidden"></div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
