@@ -1,0 +1,17 @@
+{
+  "root": "/home/hj/userfeedback3/uid6-0046",
+  "B": "/home/hj/userfeedback3/uid6-0046",
+  "sha": "53f40c65d703ed1541a2283d556719231a7d16d8",
+  "wslDistro": "Ubuntu-26.04",
+  "source": {
+    "owner": "kyeongeop",
+    "repo": "20261126",
+    "sha": "53f40c65d703ed1541a2283d556719231a7d16d8"
+  },
+  "fork": {
+    "owner": "kyeongeop",
+    "repo": "20261126",
+    "cloneUrl": "https://github.com/kyeongeop/20261126.git"
+  },
+  "at": "2026-11-25T17:07:15.756Z"
+}
