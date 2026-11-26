@@ -1,0 +1,7 @@
+# Hermetic, offline-safe builds: all allowed dependencies are vendored under
+# `vendor/`. This keeps `cargo test` working without registry/network access.
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "vendor"

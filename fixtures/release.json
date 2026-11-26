@@ -1,0 +1,43 @@
+{
+  "schema": "mgate.release/v1",
+  "release": {
+    "name": "mgate-platform",
+    "version": "2.4.0"
+  },
+  "root": ".",
+  "targets": [
+    {
+      "path": "bin/app_hardened",
+      "type": "executable",
+      "required": true,
+      "required_symbols": ["mgate_exec_anchor"]
+    },
+    {
+      "path": "bin/app_weak",
+      "type": "executable",
+      "required": true
+    },
+    {
+      "path": "lib/libmgate_hard.so",
+      "type": "shared_library",
+      "required": true,
+      "required_symbols": ["mgate_lib_version", "mgate_lib_anchor"]
+    },
+    {
+      "path": "lib/libmgate_weak.so",
+      "type": "shared_library",
+      "required": true
+    },
+    {
+      "path": "static/libmgate_safe.a",
+      "type": "static_library",
+      "required": true,
+      "required_symbols": ["mgate_static_add", "mgate_static_banner"]
+    },
+    {
+      "path": "static/libmgate_plain.a",
+      "type": "static_library",
+      "required": true
+    }
+  ]
+}

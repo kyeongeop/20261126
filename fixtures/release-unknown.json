@@ -1,0 +1,10 @@
+{
+  "schema": "mgate.release/v1",
+  "release": { "name": "mgate-platform", "version": "2.4.0-broken" },
+  "root": ".",
+  "targets": [
+    { "path": "other/truncated.elf", "required": true },
+    { "path": "static/libmgate_empty.a", "type": "static_library", "required": true },
+    { "path": "other/notes.txt", "required": true }
+  ]
+}

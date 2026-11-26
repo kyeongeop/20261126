@@ -1,0 +1,22 @@
+{
+  "schema": "mgate.release/v1",
+  "release": { "name": "mgate-platform", "version": "2.4.0-rc1" },
+  "root": ".",
+  "targets": [
+    {
+      "path": "bin/app_hardened",
+      "required": true,
+      "required_symbols": ["mgate_exec_anchor", "__stack_chk_fail"]
+    },
+    {
+      "path": "lib/libmgate_hard.so",
+      "required": true,
+      "required_symbols": ["mgate_lib_anchor", "__stack_chk_fail"]
+    },
+    {
+      "path": "static/libmgate_safe.a",
+      "required": true,
+      "required_symbols": ["mgate_static_copy", "__stack_chk_fail"]
+    }
+  ]
+}
