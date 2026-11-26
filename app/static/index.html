@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>事故时间线 · TQL 查询控制台</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">⏱</span>
+      <div>
+        <h1>事故时间线</h1>
+        <p class="subtitle">TQL 本地查询语言 · 字段 / 前后关系 / 时间窗口 / 证据标签</p>
+      </div>
+    </div>
+    <div class="topbar-meta">
+      <span id="db-status" class="badge">连接中…</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card query-card">
+      <div class="query-row">
+        <textarea id="tql-input" rows="2" spellcheck="false"
+          placeholder='输入 TQL，例如：level = "error" AFTER #deploy WITHIN 30m'></textarea>
+        <div class="query-actions">
+          <button id="btn-run" class="btn primary">查询</button>
+          <button id="btn-export-csv" class="btn">导出 CSV</button>
+          <button id="btn-export-json" class="btn">导出 JSON</button>
+        </div>
+      </div>
+
+      <div class="options-row">
+        <label>条数上限
+          <input id="limit-input" type="number" min="1" max="500" value="100" />
+        </label>
+        <label>顺序
+          <select id="order-select">
+            <option value="asc">时间正序</option>
+            <option value="desc">时间倒序</option>
+          </select>
+        </label>
+        <div id="examples" class="examples"></div>
+      </div>
+
+      <div id="error-panel" class="error-panel hidden">
+        <div class="error-title">
+          <span id="error-kind" class="error-kind"></span>
+          <span id="error-message"></span>
+          <span id="error-loc" class="error-loc"></span>
+        </div>
+        <pre id="error-rendered" class="error-rendered"></pre>
+      </div>
+    </section>
+
+    <section class="card classic-card">
+      <details>
+        <summary>旧版筛选：按主机 + 开始时间</summary>
+        <div class="classic-row">
+          <label>主机
+            <select id="host-select"><option value="">全部主机</option></select>
+          </label>
+          <label>开始时间 (UTC)
+            <input id="start-input" type="datetime-local" step="1" />
+          </label>
+          <button id="btn-classic" class="btn">应用旧筛选</button>
+          <button id="btn-sync-tql" class="btn ghost" title="把旧筛选转成 TQL">转为 TQL</button>
+        </div>
+      </details>
+    </section>
+
+    <section class="card result-card">
+      <div class="result-head">
+        <div id="result-summary" class="result-summary">尚未查询</div>
+        <div id="active-query" class="active-query"></div>
+      </div>
+      <div class="table-wrap">
+        <table class="timeline-table">
+          <thead>
+            <tr>
+              <th>时间 (UTC)</th><th>主机</th><th>服务</th><th>级别</th>
+              <th>事件</th><th>证据标签</th><th>证据</th>
+            </tr>
+          </thead>
+          <tbody id="result-body">
+            <tr><td colspan="7" class="empty">输入查询后点击「查询」，或直接使用示例。空条件返回全部事件。</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card help-card">
+      <details>
+        <summary>TQL 语法速查</summary>
+        <div class="help-grid">
+          <div>
+            <h3>事件字段</h3>
+            <code>host = "api-01"</code>
+            <code>level != "info"</code>
+            <code>message ~ "timeout"</code>
+            <code>id &gt; 10 / ts &gt;= "2026-11-25T14:00:00Z"</code>
+          </div>
+          <div>
+            <h3>证据标签组合</h3>
+            <code>#deploy AND NOT #verified</code>
+            <code>all_tags("db-lock","timeout")</code>
+            <code>any_tags("trace","metrics")</code>
+            <code>(#a OR #b) AND #c</code>
+          </div>
+          <div>
+            <h3>前后关系 + 窗口</h3>
+            <code>level="error" AFTER #deploy WITHIN 20m</code>
+            <code>#timeout BEFORE #rollback WITHIN 45m</code>
+            <code>LAST 6h AND service="checkout"</code>
+            <p class="hint">单位：ms / s / m / h / d；WITHIN 可省略。</p>
+          </div>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
