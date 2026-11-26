@@ -1,0 +1,4 @@
+/data/
+/immutable-packages
+*.test
+coverage.out
