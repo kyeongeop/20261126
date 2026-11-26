@@ -1,0 +1,1 @@
+Quarterly report fixture. Do not expose this folder to Design guests.

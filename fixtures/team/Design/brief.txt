@@ -1,0 +1,4 @@
+Design team shared brief.
+
+This folder is intentionally inside the repository so the service can be
+started without downloading additional fixtures.
