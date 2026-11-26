@@ -1,0 +1,43 @@
+[
+  {
+    "name": "internal-hostname",
+    "spec": {
+      "type": "regex",
+      "label": "host",
+      "pattern": "\\b[a-z0-9-]+\\.prod\\.internal\\b",
+      "exceptions": [
+        {"pattern": "^status\\.prod\\.internal$", "on": "match"}
+      ]
+    }
+  },
+  {
+    "name": "email-address",
+    "spec": {
+      "type": "regex",
+      "label": "email",
+      "pattern": "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b",
+      "exceptions": [
+        {"pattern": "@example\\.com$", "on": "match"}
+      ]
+    }
+  },
+  {
+    "name": "api-token",
+    "spec": {
+      "type": "regex",
+      "label": "token",
+      "pattern": "\\btok_[A-Za-z0-9]{16,}\\b",
+      "exceptions": [
+        {"pattern": "runbook|documentation", "on": "context"}
+      ]
+    }
+  },
+  {
+    "name": "reporter-email-field",
+    "spec": {
+      "type": "field",
+      "label": "email",
+      "fields": ["payload.reporter.email", "payload.assignee.email"]
+    }
+  }
+]
