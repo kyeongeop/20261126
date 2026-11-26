@@ -1,0 +1,51 @@
+{
+  "title": "Checkout latency incident",
+  "description": "Checkout requests exceeded the error budget for 18 minutes.",
+  "source_config": {
+    "environment": "production",
+    "region": "ap-east-1",
+    "clock": "UTC",
+    "log_sources": [
+      {
+        "name": "checkout-api",
+        "type": "application_log",
+        "uri": "s3://incident-evidence-fixtures/checkout-api.log"
+      },
+      {
+        "name": "edge-proxy",
+        "type": "proxy_log",
+        "uri": "s3://incident-evidence-fixtures/edge-proxy.log"
+      }
+    ],
+    "retention_days": 30
+  },
+  "events": [
+    {
+      "occurred_at": "2026-11-25T08:02:00Z",
+      "title": "Latency alert fired",
+      "description": "p99 checkout latency crossed 2.5 seconds.",
+      "source": "monitoring",
+      "actor": "alertmanager"
+    },
+    {
+      "occurred_at": "2026-11-25T08:05:00Z",
+      "title": "Incident acknowledged",
+      "description": "On-call engineer began triage.",
+      "source": "pagerduty",
+      "actor": "alice"
+    },
+    {
+      "occurred_at": "2026-11-25T08:20:00Z",
+      "title": "Rollback completed",
+      "description": "Previous application revision restored.",
+      "source": "deployment-controller",
+      "actor": "release-bot"
+    }
+  ],
+  "exporter": {
+    "name": "Alice Chen",
+    "email": "alice.chen@example.com",
+    "organization": "Platform Reliability"
+  }
+}
+
