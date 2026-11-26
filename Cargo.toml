@@ -1,0 +1,16 @@
+[package]
+name = "release-signature-admission"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+description = "Configurable signature admission policies for release artifacts"
+license = "MIT"
+
+[dependencies]
+object = "0.36"
+serde_json = "1.0"
+sha2 = "0.10"
+
+[[bin]]
+name = "signature-admission"
+path = "src/bin/signature_admission.rs"

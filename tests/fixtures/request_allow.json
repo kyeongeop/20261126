@@ -1,0 +1,36 @@
+{
+  "product_line": "desktop-stable",
+  "publish_at": "2026-11-26T10:00:00Z",
+  "artifact": {
+    "path": "tests/fixtures/release.bin"
+  },
+  "signatures": [
+    {
+      "key_id": "audit-key-1",
+      "publisher": "audit.external",
+      "algorithm": "sha256",
+      "artifact_sha256": "4b327abf7a83b7602345c0b97378321c7fb3b4f0d61e49a186f806555e6cf1ff",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z",
+      "status": "active"
+    },
+    {
+      "key_id": "release-key-1",
+      "publisher": "acme.release",
+      "algorithm": "sha256",
+      "artifact_sha256": "4b327abf7a83b7602345c0b97378321c7fb3b4f0d61e49a186f806555e6cf1ff",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z",
+      "status": "active"
+    },
+    {
+      "key_id": "security-key-1",
+      "publisher": "acme.security",
+      "algorithm": "sha256",
+      "artifact_sha256": "4b327abf7a83b7602345c0b97378321c7fb3b4f0d61e49a186f806555e6cf1ff",
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z",
+      "status": "active"
+    }
+  ]
+}

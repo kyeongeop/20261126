@@ -1,0 +1,8 @@
+{
+  "product_line": "desktop-stable",
+  "publish_at": "2026-11-26T10:00:00Z",
+  "artifact": {
+    "path": "tests/fixtures/release.bin"
+  },
+  "signatures": []
+}

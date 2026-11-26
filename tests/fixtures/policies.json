@@ -1,0 +1,54 @@
+{
+  "policies": [
+    {
+      "id": "global-audit",
+      "description": "Every release needs an independent audit signature",
+      "priority": 5,
+      "product_lines": ["*"],
+      "publisher_scope": {
+        "include": ["audit.*"],
+        "exclude": ["audit.legacy"]
+      },
+      "required_signatures": 1,
+      "allowed_algorithms": ["sha256"],
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z",
+      "status": "active"
+    },
+    {
+      "id": "desktop-release",
+      "description": "Desktop releases require release and security sign-off",
+      "priority": 20,
+      "product_lines": ["desktop-*"],
+      "publisher_scope": {
+        "include": ["acme.*"],
+        "exclude": ["acme.legacy"]
+      },
+      "required_signatures": 2,
+      "required_publishers": ["acme.release", "acme.security"],
+      "require_distinct_publishers": true,
+      "allowed_algorithms": ["sha256"],
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z",
+      "status": "active"
+    },
+    {
+      "id": "mobile-release",
+      "priority": 10,
+      "product_lines": ["mobile-*"],
+      "publishers": ["mobile.*"],
+      "required_signatures": 1,
+      "valid_from": "2026-01-01T00:00:00Z",
+      "valid_until": "2027-01-01T00:00:00Z",
+      "status": "active"
+    },
+    {
+      "id": "server-only",
+      "priority": 1,
+      "product_lines": ["server-*"],
+      "publishers": ["server.*"],
+      "required_signatures": 1,
+      "status": "active"
+    }
+  ]
+}
