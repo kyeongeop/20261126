@@ -1,0 +1,42 @@
+{
+  "registry": "https://pkgs.acme.test",
+  "note": "Trusted internal registry index. sha256 values match the real tarballs under fixtures/tarballs (produced by `depguard pack`).",
+  "packages": {
+    "@acme/core": {
+      "name": "@acme/core",
+      "latest": "1.4.0",
+      "versions": {
+        "1.4.0": {
+          "version": "1.4.0",
+          "sha256": "sha256:8a679649f6fc387cfe8dd79a77c906f67e484cbf36a640f51b49753e22622d5a",
+          "tarball": "https://pkgs.acme.test/@acme/core/-/core-1.4.0.tgz",
+          "archive": "tarballs/acme-core-1.4.0.tar"
+        }
+      }
+    },
+    "@acme/ui": {
+      "name": "@acme/ui",
+      "latest": "2.0.0",
+      "versions": {
+        "2.0.0": {
+          "version": "2.0.0",
+          "sha256": "sha256:b4a09cf01295aa2c52dc9f0658e125c3be8477067ef443c7b8b85ecb533eddd1",
+          "tarball": "https://pkgs.acme.test/@acme/ui/-/ui-2.0.0.tgz",
+          "archive": "tarballs/acme-ui-2.0.0.tar"
+        }
+      }
+    },
+    "acme-billing": {
+      "name": "acme-billing",
+      "latest": "3.1.0",
+      "versions": {
+        "3.1.0": {
+          "version": "3.1.0",
+          "sha256": "sha256:45343eac370d5d22f1163251c25028c142c33307321d9a81277b61609e58a0d5",
+          "tarball": "https://pkgs.acme.test/acme-billing/-/acme-billing-3.1.0.tgz",
+          "archive": "tarballs/acme-billing-3.1.0.tar"
+        }
+      }
+    }
+  }
+}

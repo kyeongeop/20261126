@@ -1,0 +1,6 @@
+{
+  "name": "@acme/core",
+  "version": "1.4.0",
+  "main": "index.js",
+  "description": "Internal Acme core library (fixture)."
+}

@@ -1,0 +1,11 @@
+# Build artifacts
+/depguard
+/depguard.exe
+*.test
+*.out
+
+# Local registry data
+/data/
+
+# Editor/OS
+.DS_Store

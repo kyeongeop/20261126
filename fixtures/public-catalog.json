@@ -1,0 +1,42 @@
+{
+  "registry": "https://registry.npmjs.org",
+  "note": "Offline snapshot of the PUBLIC registry. It deliberately contains the squatted internal names @acme/ui and acme-billing (dependency-confusion evidence).",
+  "packages": {
+    "@acme/ui": {
+      "name": "@acme/ui",
+      "latest_version": "4.0.0-evil",
+      "versions": ["4.0.0-evil"],
+      "registry": "https://registry.npmjs.org"
+    },
+    "acme-billing": {
+      "name": "acme-billing",
+      "latest_version": "9.9.9",
+      "versions": ["9.9.9"],
+      "registry": "https://registry.npmjs.org"
+    },
+    "lodash": {
+      "name": "lodash",
+      "latest_version": "4.17.21",
+      "versions": ["4.17.21"],
+      "registry": "https://registry.npmjs.org"
+    },
+    "express": {
+      "name": "express",
+      "latest_version": "4.19.2",
+      "versions": ["4.19.2"],
+      "registry": "https://registry.npmjs.org"
+    },
+    "dayjs": {
+      "name": "dayjs",
+      "latest_version": "1.11.10",
+      "versions": ["1.11.10"],
+      "registry": "https://registry.npmjs.org"
+    },
+    "random-utils": {
+      "name": "random-utils",
+      "latest_version": "1.2.0",
+      "versions": ["1.2.0"],
+      "registry": "https://registry.npmjs.org"
+    }
+  }
+}

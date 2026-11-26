@@ -1,0 +1,21 @@
+{
+  "registry": "https://registry.npmjs.org",
+  "note": "Cleaner public view: the Acme internal names have already been reserved/removed from the public registry, so no same-name collision exists.",
+  "packages": {
+    "lodash": {
+      "name": "lodash",
+      "latest_version": "4.17.21",
+      "versions": ["4.17.21"]
+    },
+    "express": {
+      "name": "express",
+      "latest_version": "4.19.2",
+      "versions": ["4.19.2"]
+    },
+    "dayjs": {
+      "name": "dayjs",
+      "latest_version": "1.11.10",
+      "versions": ["1.11.10"]
+    }
+  }
+}

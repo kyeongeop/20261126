@@ -1,0 +1,20 @@
+{
+  "schema": "depguard.config/v1",
+  "project": "safe-checkout",
+  "manifest": "package.json",
+  "lockfile": "package-lock.json",
+  "public_catalog": "../../public-catalog-safe.json",
+  "internal_index": "../../internal-index.json",
+  "registries": [
+    { "id": "acme-internal", "url": "https://pkgs.acme.test", "kind": "internal" },
+    { "id": "npmjs", "url": "https://registry.npmjs.org", "kind": "public", "default": true },
+    { "id": "acme-cn-mirror", "url": "https://mirrors.acme.test/npm", "kind": "mirror" }
+  ],
+  "namespace": {
+    "internal_registry_id": "acme-internal",
+    "prefixes": ["@acme/", "go.acme.dev/"],
+    "exact": ["acme-billing"],
+    "fallback": "deny"
+  },
+  "trusted_public_packages": ["lodash", "express", "dayjs"]
+}

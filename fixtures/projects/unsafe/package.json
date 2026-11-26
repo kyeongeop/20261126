@@ -1,0 +1,15 @@
+{
+  "name": "unsafe-checkout",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fixture mixing internal and public namespaces with misconfigured sources.",
+  "dependencies": {
+    "@acme/core": "^1.4.0",
+    "@acme/ui": "^2.0.0",
+    "acme-billing": "^3.1.0",
+    "lodash": "^4.17.21",
+    "express": "^4.19.2",
+    "dayjs": "^1.11.10",
+    "random-utils": "^1.2.0"
+  }
+}
