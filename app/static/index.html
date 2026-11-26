@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>事故时间线 · 假设卡片</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <h1>事故时间线 · 假设与证据关联</h1>
+  </header>
+
+  <main>
+    <aside id="sidebar">
+      <section class="panel">
+        <h2>假设</h2>
+        <ul id="hypothesis-list"></ul>
+        <form id="hypothesis-form">
+          <input id="hypothesis-title" placeholder="新假设标题" required maxlength="200" />
+          <textarea id="hypothesis-statement" placeholder="假设陈述（可选）"></textarea>
+          <button type="submit">新增假设</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>新增事件</h2>
+        <form id="event-form">
+          <input id="event-title" placeholder="事件标题" required maxlength="200" />
+          <input id="event-time" type="datetime-local" required />
+          <input id="event-source" placeholder="来源（可选）" />
+          <textarea id="event-description" placeholder="事件描述（可选）"></textarea>
+          <button type="submit">添加事件</button>
+        </form>
+      </section>
+    </aside>
+
+    <section id="board-panel">
+      <div id="board-header">
+        <h2 id="board-title">请选择左侧假设</h2>
+        <p id="board-statement"></p>
+      </div>
+      <div id="board" class="hidden">
+        <div class="column" data-verdict="support">
+          <h3>支持 <span class="count" id="count-support">0</span></h3>
+          <div class="cards" id="col-support"></div>
+        </div>
+        <div class="column" data-verdict="refute">
+          <h3>反驳 <span class="count" id="count-refute">0</span></h3>
+          <div class="cards" id="col-refute"></div>
+        </div>
+        <div class="column" data-verdict="unknown">
+          <h3>未知 <span class="count" id="count-unknown">0</span></h3>
+          <div class="cards" id="col-unknown"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <template id="event-card-template">
+    <div class="card">
+      <div class="card-head">
+        <strong class="card-title"></strong>
+        <time class="card-time"></time>
+      </div>
+      <p class="card-desc"></p>
+      <p class="card-source"></p>
+      <div class="verdict-buttons">
+        <button data-verdict="support">支持</button>
+        <button data-verdict="refute">反驳</button>
+        <button data-verdict="unknown">未知</button>
+      </div>
+      <textarea class="reason-input" placeholder="判断理由…"></textarea>
+      <button class="save-reason">保存判断</button>
+    </div>
+  </template>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
