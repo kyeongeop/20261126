@@ -1,0 +1,68 @@
+{
+  "admins": [
+    {
+      "id": "alice",
+      "display_name": "Alice Chen"
+    },
+    {
+      "id": "bob",
+      "display_name": "Bob Li"
+    },
+    {
+      "id": "carol",
+      "display_name": "Carol Wu"
+    }
+  ],
+  "sensitive_actions": [
+    "billing.invoice.write",
+    "roles.manage",
+    "secrets.read",
+    "tickets.escalate",
+    "users.delete"
+  ],
+  "roles": [
+    {
+      "id": "base_support",
+      "name": "Base Support",
+      "version": 1,
+      "direct_permissions": [
+        "tickets.comment",
+        "tickets.read"
+      ],
+      "parent_role_ids": []
+    },
+    {
+      "id": "support_agent",
+      "name": "Support Agent",
+      "version": 1,
+      "direct_permissions": [
+        "tickets.assign",
+        "tickets.escalate"
+      ],
+      "parent_role_ids": [
+        "base_support"
+      ]
+    },
+    {
+      "id": "billing_admin",
+      "name": "Billing Administrator",
+      "version": 4,
+      "direct_permissions": [
+        "billing.invoice.read"
+      ],
+      "parent_role_ids": [
+        "support_agent"
+      ]
+    },
+    {
+      "id": "security_auditor",
+      "name": "Security Auditor",
+      "version": 1,
+      "direct_permissions": [
+        "audit.read",
+        "users.read"
+      ],
+      "parent_role_ids": []
+    }
+  ]
+}
