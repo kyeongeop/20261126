@@ -1,0 +1,25 @@
+[package]
+name = "archive-structure-check"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+description = "Archive structure admission checks for the release artifact management platform"
+license = "UNLICENSED"
+
+[lib]
+name = "archive_structure_check"
+path = "src/lib.rs"
+
+[[bin]]
+name = "archive-check"
+path = "src/main.rs"
+
+[dependencies]
+serde_json = "1.0"
+sha2 = "0.10"
+object = { version = "0.36", default-features = false, features = ["read", "std"] }
+
+[profile.release]
+opt-level = 2
+lto = "thin"
+

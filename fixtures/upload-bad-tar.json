@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "release": {
+    "name": "agent",
+    "version": "2.4.1",
+    "build": "bad-tar"
+  },
+  "archive": {
+    "path": "archives/agent-2.4.1-bad.tar",
+    "sha256": "c07c30c45ef3ba24b3ed34c31a9bc5c3658babb8b1497aa9d69ad13c271c3e06"
+  }
+}

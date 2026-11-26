@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "release": {
+    "name": "agent",
+    "version": "2.4.1",
+    "build": "fix-regression"
+  },
+  "upload_type": "fix",
+  "archive": {
+    "path": "archives/agent-2.4.1-bad.zip",
+    "sha256": "3324ea3ac03fd8326737200c50d737a66ec5b1494ce798e089ad498064f04871"
+  },
+  "previous": {
+    "path": "archives/agent-2.4.0.zip",
+    "sha256": "0b1693bb8b1131ea166695c95f12efb8722bd9e8ee63275d1bfc2570081af537"
+  }
+}

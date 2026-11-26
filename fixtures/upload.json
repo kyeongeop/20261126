@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "release": {
+    "name": "agent",
+    "version": "2.4.0",
+    "build": "release-1"
+  },
+  "archive": {
+    "path": "archives/agent-2.4.0.zip",
+    "sha256": "0b1693bb8b1131ea166695c95f12efb8722bd9e8ee63275d1bfc2570081af537"
+  }
+}
